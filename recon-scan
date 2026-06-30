@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+#
+# recon-scan — RustScan + nmap-formatter pipeline for pentest engagements
+#
+# PRIVILEGE NOTES:
+#   - nmap SYN scans (-sS, the default when run as root) require root or
+#     `setcap cap_net_raw,cap_net_admin+eip /usr/bin/nmap`.
+#     Without this, nmap falls back to TCP connect() scans (slower, noisier).
+#   - RustScan 2.3.0 uses the {{ip}} template to write per-host XML output.
+#   - The scans/ directory (raw XML) is NOT deleted — keep it for auditing.
+#
+# Usage: recon-scan <engagement-dir> <subnet>
+
+set -euo pipefail
+shopt -s nullglob
+
+ENGAGEMENT="${1:?Usage: recon-scan <engagement-dir> <subnet>}"
+SUBNET="${2:?}"
+NMAP_FORMATTER="${NMAP_FORMATTER:-nmap-formatter}"
+
+# Create fresh engagement directory
+mkdir -p "$ENGAGEMENT/scans"
+
+echo "[*] Phase 1: Port discovery on $SUBNET"
+rustscan -a "$SUBNET" -r 1-65535 --ulimit 5000 \
+  -- -oX "$ENGAGEMENT/scans/{{ip}}.xml" -Pn -sV -sC -T4
+
+# Guard against empty glob
+XML_FILES=("$ENGAGEMENT"/scans/*.xml)
+XML_COUNT="${#XML_FILES[@]}"
+if [ "$XML_COUNT" -eq 0 ]; then
+  echo "[!] No XML files produced — RustScan found no open ports or nmap failed" >&2
+  echo "    Check that hosts were reachable and RustScan completed successfully." >&2
+  exit 1
+fi
+echo "[*] Phase 1 complete: $XML_COUNT host XML files"
+
+echo "[*] Phase 2: Ingest into SQLite"
+# nmap-formatter only processes one XML file per invocation — no merge mode.
+# Process each XML into its own temp DB, then merge into engagement.db.
+rm -f "$ENGAGEMENT/engagement.db"
+
+MERGE_PY=$(mktemp)
+cat > "$MERGE_PY" <<'PYEOF'
+import sqlite3, sys, shutil, os
+master = sys.argv[1]
+temps = sys.argv[2:]
+
+# First temp DB becomes the master
+shutil.copy(temps[0], master)
+mdb = sqlite3.connect(master)
+mdb.execute("PRAGMA foreign_keys = OFF")
+
+for tmp in temps[1:]:
+    sdb = sqlite3.connect(tmp)
+    sdb.execute("PRAGMA foreign_keys = OFF")
+
+    # Copy hosts (exclude id, let SQLite auto-assign)
+    for row in sdb.execute("SELECT scan_id, nf_address_joined, nf_host_names_joined, start_time, end_time, status_state, status_reason, uptime_seconds, uptime_last_boot, distance_value, tcp_sequence_index, tcp_sequence_difficulty, tcp_sequence_values, ip_id_sequence_class, ip_id_sequence_values, tcp_ts_sequence_class, tcp_ts_sequence_values, traces_port, traces_protocol, status FROM hosts"):
+        cur = mdb.execute("INSERT INTO hosts(scan_id, nf_address_joined, nf_host_names_joined, start_time, end_time, status_state, status_reason, uptime_seconds, uptime_last_boot, distance_value, tcp_sequence_index, tcp_sequence_difficulty, tcp_sequence_values, ip_id_sequence_class, ip_id_sequence_values, tcp_ts_sequence_class, tcp_ts_sequence_values, traces_port, traces_protocol, status) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", row)
+        new_host_id = cur.lastrowid
+        old_host_id = sdb.execute("SELECT id FROM hosts WHERE nf_address_joined = ? LIMIT 1", (row[1],)).fetchone()[0]
+
+        # Copy ports for this host
+        for p in sdb.execute("SELECT port_id, state_state, state_reason, state_reason_ttl, service_name, service_product, service_version, service_extra_info, service_method, service_conf, service_cpe FROM ports WHERE host_id = ?", (old_host_id,)):
+            mdb.execute("INSERT INTO ports(host_id, port_id, state_state, state_reason, state_reason_ttl, service_name, service_product, service_version, service_extra_info, service_method, service_conf, service_cpe) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", (new_host_id,) + p)
+
+        # Copy host addresses
+        for a in sdb.execute("SELECT address, address_type FROM host_addresses WHERE host_id = ?", (old_host_id,)):
+            mdb.execute("INSERT INTO host_addresses(host_id, address, address_type) VALUES(?,?,?)", (new_host_id, a[0], a[1]))
+
+        # Copy host names
+        for n in sdb.execute("SELECT name, type FROM host_names WHERE host_id = ?", (old_host_id,)):
+            mdb.execute("INSERT INTO host_names(host_id, name, type) VALUES(?,?,?)", (new_host_id, n[0], n[1]))
+
+        # Copy OS data
+        for o in sdb.execute("SELECT type, vendor, osfamily, osgen, accuracy, cpe FROM host_os_class WHERE host_id = ?", (old_host_id,)):
+            mdb.execute("INSERT INTO host_os_class(host_id, type, vendor, osfamily, osgen, accuracy, cpe) VALUES(?,?,?,?,?,?,?)", (new_host_id,) + o)
+        for o in sdb.execute("SELECT name, accuracy, line FROM host_os_match WHERE host_id = ?", (old_host_id,)):
+            mdb.execute("INSERT INTO host_os_match(host_id, name, accuracy, line) VALUES(?,?,?,?)", (new_host_id, o[0], o[1], o[2]))
+        for o in sdb.execute("SELECT state, protocol, port_id FROM host_os_port_used WHERE host_id = ?", (old_host_id,)):
+            mdb.execute("INSERT INTO host_os_port_used(host_id, state, protocol, port_id) VALUES(?,?,?,?)", (new_host_id,) + o)
+
+    sdb.close()
+    os.unlink(tmp)
+
+mdb.commit()
+mdb.close()
+PYEOF
+
+for xml in "${XML_FILES[@]}"; do
+  tmpdb=$(mktemp)
+  $NMAP_FORMATTER sqlite "$xml" --sqlite-dsn "$tmpdb" --skip-down-hosts=false || {
+    echo "[!] nmap-formatter failed on $xml" >&2
+    rm -f "$tmpdb" "$MERGE_PY"
+    exit 1
+  }
+  TEMP_DBS+=("$tmpdb")
+done
+
+python3 "$MERGE_PY" "$ENGAGEMENT/engagement.db" "${TEMP_DBS[@]}"
+rm -f "$MERGE_PY"
+echo "[*] Phase 2 complete: $ENGAGEMENT/engagement.db"
+
+echo "[*] Phase 2 bonus: Markdown overview"
+# nmap-formatter md has the same single-file limitation as sqlite.
+# Generate overview directly from the merged DB instead.
+{
+  echo "# Engagement Overview — $(basename "$ENGAGEMENT")"
+  echo ""
+  echo "| IP | Hostname | Status | Open Ports | Services |"
+  echo "|----|----------|--------|------------|----------|"
+  sqlite3 "$ENGAGEMENT/engagement.db" "
+    SELECT
+      '| ' || h.nf_address_joined ||
+      ' | ' || COALESCE(NULLIF(h.nf_host_names_joined,''), '-') ||
+      ' | ' || h.status_state ||
+      ' | ' || COALESCE(GROUP_CONCAT(DISTINCT p.port_id), '-') ||
+      ' | ' || COALESCE(GROUP_CONCAT(DISTINCT p.service_name), '-') ||
+      ' |'
+    FROM hosts h
+    LEFT JOIN ports p ON p.host_id = h.id AND p.state_state = 'open'
+    GROUP BY h.id
+    ORDER BY h.nf_address_joined;
+  "
+  echo ""
+  echo "## Per-Host Details"
+  echo ""
+  sqlite3 "$ENGAGEMENT/engagement.db" "
+    SELECT
+      '### ' || h.nf_address_joined ||
+      CASE WHEN h.nf_host_names_joined IS NOT NULL AND h.nf_host_names_joined != ''
+        THEN ' (' || h.nf_host_names_joined || ')' ELSE '' END ||
+      ' — ' || h.status_state || char(10) || char(10) ||
+      '| Port | State | Service | Product | Version |' || char(10) ||
+      '|------|-------|---------|---------|---------|' || char(10) ||
+      COALESCE(
+        (SELECT GROUP_CONCAT(
+          '| ' || p.port_id || ' | ' || p.state_state || ' | ' ||
+          COALESCE(p.service_name,'-') || ' | ' ||
+          COALESCE(p.service_product,'-') || ' | ' ||
+          COALESCE(p.service_version,'-') || ' |',
+          char(10)
+        ) FROM ports p WHERE p.host_id = h.id ORDER BY p.port_id),
+        '_No open ports_'
+      ) || char(10)
+    FROM hosts h
+    ORDER BY h.nf_address_joined;
+  "
+} > "$ENGAGEMENT/overview.md"
+echo "[*] Overview: $ENGAGEMENT/overview.md"
+
+echo "[+] Scan pipeline complete."
+echo "    DB:       $ENGAGEMENT/engagement.db"
+echo "    Overview: $ENGAGEMENT/overview.md"
+echo "    Raw XML:  $ENGAGEMENT/scans/"
