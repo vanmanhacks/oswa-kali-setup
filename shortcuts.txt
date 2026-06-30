@@ -1,0 +1,13 @@
+# OSWA Exam: Xfce keyboard shortcuts
+# Export: xfconf-query -c xfce4-keyboard-shortcuts -lv > shortcuts.txt
+# Import: ./bootstrap.sh reads this file automatically
+#
+# Add your shortcuts below. Format: <property> <value>
+# Generate a current snapshot on your configured VM with:
+#   xfconf-query -c xfce4-keyboard-shortcuts -lv > shortcuts.txt
+
+# Example shortcuts (uncomment/change as needed):
+# /commands/custom/<Super>t xfce4-terminal
+# /commands/custom/<Primary><Alt>t xfce4-terminal
+# /xfwm4/custom/<Super>Left left_workspace_key
+# /xfwm4/custom/<Super>Right right_workspace_key
