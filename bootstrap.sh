@@ -10,18 +10,13 @@ echo "==> Installing VM guest tools..."
 sudo apt install -y spice-vdagent qemu-guest-agent chromium
 sudo systemctl enable --now spice-vdagentd
 
-echo "==> Hardening Kali (pimpmykali)..."
-git clone https://github.com/Dewalt-arch/pimpmykali.git /tmp/pimpmykali
-cd /tmp/pimpmykali && sudo ./pimpmykali.sh
-cd "$OLDPWD"
-
 echo "==> Installing Chrome (proctoring browser)..."
 wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/google-chrome.gpg > /dev/null
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
 sudo apt update
 
 echo "==> Installing exam tools..."
-sudo apt install -y seclists payloadsallthethings caido obsidian rustc google-chrome-stable
+sudo apt install -y seclists payloadsallthethings caido obsidian rustc google-chrome-stable ffuf sqlmap arjun
 
 echo "==> Installing uv..."
 curl -LsSf https://astral.sh/uv/install.sh | sh
