@@ -15,7 +15,7 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl
 sudo apt update
 
 echo "==> Installing exam tools..."
-sudo apt install -y seclists payloadsallthethings caido obsidian rustc google-chrome-stable arjun
+sudo apt install -y seclists payloadsallthethings caido obsidian rustc google-chrome-stable arjun flameshot
 
 echo "==> Installing uv..."
 curl -LsSf https://astral.sh/uv/install.sh | sh
