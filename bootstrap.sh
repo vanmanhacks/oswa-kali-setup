@@ -8,7 +8,6 @@ sudo apt update && sudo apt full-upgrade -y
 
 echo "==> Installing VM guest tools..."
 sudo apt install -y spice-vdagent qemu-guest-agent chromium
-sudo systemctl enable --now spice-vdagentd
 
 echo "==> Installing Chrome (proctoring browser)..."
 wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/google-chrome.gpg > /dev/null
