@@ -22,9 +22,15 @@ cd oswa-setup
 
 | File | Purpose |
 |---|---|
-| `bootstrap.sh` | Run once on fresh VM, idempotent |
+| `bootstrap.sh` | Run once on fresh VM — full setup |
 | `shortcuts.txt` | Xfce keyboard shortcuts (exported via xfconf-query) |
 | `split_findings.py` | Splits exam notes into per-finding markdown files for SysReptor |
+| `oswa-battle-rhythm.md` | Exam strategy: timeline, rotation rule, panic checkpoints |
+| `oswa-exam-notes.md` | Live exam notes template (mdfindings2reptor format) |
+| `oswa-sysreptor-guide.md` | Step-by-step SysReptor reporting workflow |
+| `oswa-commands-reference.md` | Ponytail-trimmed commands/payloads reference (1,289 lines) |
+| `oswa-vm-setup.md` | Kali VM setup on NixOS host (QEMU/KVM) |
+| `references/oswa-methodologies.md` | Study/prep reference: per-vuln methodology checklists |
 
 ## Customizing
 
