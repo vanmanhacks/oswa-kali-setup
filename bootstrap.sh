@@ -19,23 +19,13 @@ cd "$OLDPWD"
 
 echo "==> Installing Chrome (proctoring browser)..."
 wget -qO /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo dpkg -i /tmp/chrome.deb && rm /tmp/chrome.deb
+sudo dpkg -i /tmp/chrome.deb && sudo rm /tmp/chrome.deb
 
 echo "==> Installing exam tools..."
-sudo apt install -y \
-  seclists \
-  payloadsallthethings \
-  gobuster \
-  feroxbuster \
-  sqlmap \
-  caido \
-  nmap \
-  obsidian
+sudo apt install -y seclists payloadsallthethings caido obsidian
 
-echo "==> Installing pip tools (uv)..."
-if ! command -v uv &>/dev/null; then
-  curl -LsSf https://astral.sh/uv/install.sh | sh
-fi
+echo "==> Installing uv..."
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 echo "==> Installing Rust + tools..."
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -49,7 +39,15 @@ mkdir -p ~/OSWA/targets/{host1,host2,host3,host4,host5}
 echo "==> Installing SysReptor tools..."
 uv pip install reptor
 mkdir -p ~/Clones
-git clone https://github.com/tiagomanunes/mdfindings2reptor.git ~/Clones/mdfindings2reptor
+git clone https://github.com/tiagomanunes/mdfindings2reptor.git ~/Clones/mdfindings2reptor.git
+
+echo "==> Importing notes from repo..."
+cp "$(dirname "$0")"/oswa-battle-rhythm.md ~/OSWA/notes/
+cp "$(dirname "$0")"/oswa-exam-notes.md ~/OSWA/notes/
+cp "$(dirname "$0")"/oswa-sysreptor-guide.md ~/OSWA/notes/
+cp "$(dirname "$0")"/oswa-commands-reference.md ~/OSWA/notes/
+cp "$(dirname "$0")"/oswa-vm-setup.md ~/OSWA/notes/
+echo "  Notes imported to ~/OSWA/notes/"
 
 echo "==> Importing keyboard shortcuts..."
 while IFS= read -r line; do
