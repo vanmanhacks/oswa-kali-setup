@@ -41,6 +41,13 @@ uv pip install reptor[translate]
 git clone https://github.com/tiagomanunes/mdfindings2reptor.git
 cd "$OLDPWD"
 
+echo "==> Verifying webcam..."
+if ls /dev/video* 2>/dev/null; then
+  echo "  Webcam detected: $(ls /dev/video* 2>/dev/null)"
+else
+  echo "  WARNING: No webcam detected. Check USB passthrough in virt-manager."
+fi
+
 echo "==> Importing notes from repo..."
 cp "$(dirname "$0")"/oswa-battle-rhythm.md ~/OSWA/notes/
 cp "$(dirname "$0")"/oswa-exam-notes.md ~/OSWA/notes/
