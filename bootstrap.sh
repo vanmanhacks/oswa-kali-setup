@@ -15,13 +15,16 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl
 sudo apt update
 
 echo "==> Installing exam tools..."
-sudo apt install -y seclists payloadsallthethings caido obsidian rustc google-chrome-stable arjun flameshot
+sudo apt install -y seclists payloadsallthethings caido obsidian rustc google-chrome-stable arjun flameshot golang-go
 
 echo "==> Installing uv..."
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 echo "==> Installing Rust tools..."
 cargo install rustscan
+
+echo "==> Installing nmap-formatter..."
+go install github.com/vdjagilev/nmap-formatter/v3@latest
 
 echo "==> Setting up OSWA directory structure..."
 mkdir -p ~/OSWA/{exam-connection,findings,notes,sysreptor,targets}
