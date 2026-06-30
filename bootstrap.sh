@@ -25,6 +25,7 @@ cargo install rustscan
 
 echo "==> Installing nmap-formatter..."
 go install github.com/vdjagilev/nmap-formatter/v3@latest
+echo "export PATH=$PATH:/home/kali/go/bin" >> ~/.zshrc
 
 echo "==> Setting up OSWA directory structure..."
 mkdir -p ~/OSWA/{exam-connection,findings,notes,sysreptor,targets}
@@ -52,14 +53,14 @@ cp "$(dirname "$0")"/oswa-sysreptor-guide.md ~/OSWA/notes/
 cp "$(dirname "$0")"/oswa-commands-reference.md ~/OSWA/notes/
 echo "  Notes imported to ~/OSWA/notes/"
 
-echo "==> Importing keyboard shortcuts..."
-while IFS= read -r line; do
-  [[ -z "$line" || "$line" =~ ^# ]] && continue
-  prop=$(echo "$line" | awk '{print $1}')
-  val=$(echo "$line" | awk '{$1=""; print $0}' | sed 's/^ *//')
-  xfconf-query -c xfce4-keyboard-shortcuts -p "$prop" -s "$val" --create -t string 2>/dev/null || true
-done < "$(dirname "$0")/shortcuts.txt"
-echo "  Shortcuts imported."
+#echo "==> Importing keyboard shortcuts..."
+#while IFS= read -r line; do
+#  [[ -z "$line" || "$line" =~ ^# ]] && continue
+#  prop=$(echo "$line" | awk '{print $1}')
+#  val=$(echo "$line" | awk '{$1=""; print $0}' | sed 's/^ *//')
+#  xfconf-query -c xfce4-keyboard-shortcuts -p "$prop" -s "$val" --create -t string 2>/dev/null || true
+#done < "$(dirname "$0")/shortcuts.txt"
+#echo "  Shortcuts imported."
 
 echo "==> Installing split_findings.py..."
 cp "$(dirname "$0")/split_findings.py" ~/OSWA/
@@ -69,4 +70,4 @@ echo "Done. VM is OSWA-ready."
 echo "Directories: ~/OSWA/{exam-connection,findings,notes,sysreptor,targets}"
 echo "Report workflow: ~/OSWA/split_findings.py → mdfindings2reptor → reptor push"
 echo ""
-echo "Next: log into Caido (license key), set up Chrome, export shortcuts to shortcuts.txt"
+echo "Next: log into Caido (license key), set up Chrome"
