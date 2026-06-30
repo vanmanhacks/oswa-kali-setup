@@ -47,7 +47,6 @@ cp "$(dirname "$0")"/oswa-battle-rhythm.md ~/OSWA/notes/
 cp "$(dirname "$0")"/oswa-exam-notes.md ~/OSWA/notes/
 cp "$(dirname "$0")"/oswa-sysreptor-guide.md ~/OSWA/notes/
 cp "$(dirname "$0")"/oswa-commands-reference.md ~/OSWA/notes/
-cp "$(dirname "$0")"/oswa-vm-setup.md ~/OSWA/notes/
 echo "  Notes imported to ~/OSWA/notes/"
 
 echo "==> Importing keyboard shortcuts..."
