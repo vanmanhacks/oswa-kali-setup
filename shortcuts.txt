@@ -1,13 +1,208 @@
-# OSWA Exam: Xfce keyboard shortcuts
+# OSWA Exam: Xfce keyboard shortcuts (Kali default + custom)
 # Export: xfconf-query -c xfce4-keyboard-shortcuts -lv > shortcuts.txt
-# Import: ./bootstrap.sh reads this file automatically
-#
-# Add your shortcuts below. Format: <property> <value>
-# Generate a current snapshot on your configured VM with:
-#   xfconf-query -c xfce4-keyboard-shortcuts -lv > shortcuts.txt
+# Import: ./bootstrap.sh reads this automatically
 
-# Example shortcuts (uncomment/change as needed):
-# /commands/custom/<Super>t xfce4-terminal
-# /commands/custom/<Primary><Alt>t xfce4-terminal
-# /xfwm4/custom/<Super>Left left_workspace_key
-# /xfwm4/custom/<Super>Right right_workspace_key
+/providers	[xfwm4,commands]
+
+# --- Commands (custom) ---
+/commands/custom/<Alt>F1	xfce4-popup-whiskermenu --pointer
+/commands/custom/<Alt>F2	xfrun4
+/commands/custom/<Alt>F3	xfce4-appfinder
+/commands/custom/<Alt>Print	/usr/share/kali-themes/xfce4-screenshooter --window
+/commands/custom/override	true
+/commands/custom/<Primary><Alt>Delete	xfce4-session-logout
+/commands/custom/<Primary><Alt>Escape	xkill
+/commands/custom/<Primary><Alt>f	exo-open --launch FileManager
+/commands/custom/<Primary><Alt>l	xflock4
+/commands/custom/<Primary><Alt>Print	/usr/share/kali-themes/xfce4-screenshooter --window --clipboard
+/commands/custom/<Primary><Alt>t	exo-open --launch TerminalEmulator
+/commands/custom/<Primary>Escape	xfce4-popup-whiskermenu
+/commands/custom/<Primary>Print	/usr/share/kali-themes/xfce4-screenshooter --fullscreen --clipboard
+/commands/custom/<Primary><Shift>Escape	xfce4-taskmanager
+/commands/custom/<Primary><Shift>Print	/usr/share/kali-themes/xfce4-screenshooter --region --clipboard
+/commands/custom/Print	/usr/share/kali-themes/xfce4-screenshooter
+/commands/custom/<Shift>Print	/usr/share/kali-themes/xfce4-screenshooter --region
+/commands/custom/<Shift><Super>Return	exo-open --launch WebBrowser
+/commands/custom/<Super>e	exo-open --launch FileManager
+/commands/custom/<Super>f	exo-open --launch FileManager
+/commands/custom/<Super>F1	xfce4-find-cursor
+/commands/custom/<Super>l	xflock4
+/commands/custom/<Super>p	xfce4-display-settings --minimal
+/commands/custom/<Super>r	xfrun4
+/commands/custom/<Super>Return	pkexec x-terminal-emulator
+/commands/custom/<Super>t	exo-open --launch TerminalEmulator
+/commands/custom/<Super>w	exo-open --launch WebBrowser
+/commands/custom/XF86Calculator	mate-calc
+/commands/custom/XF86Display	xfce4-display-settings --minimal
+/commands/custom/XF86Explorer	exo-open --launch FileManager
+/commands/custom/XF86Mail	exo-open --launch MailReader
+/commands/custom/XF86WWW	exo-open --launch WebBrowser
+
+# --- Commands (default) ---
+/commands/default/<Alt>F1	xfce4-popup-whiskermenu --pointer
+/commands/default/<Alt>F2	xfrun4
+/commands/default/<Alt>F3	xfce4-appfinder
+/commands/default/<Alt>Print	/usr/share/kali-themes/xfce4-screenshooter --window
+/commands/default/override	true
+/commands/default/<Primary><Alt>Delete	xfce4-session-logout
+/commands/default/<Primary><Alt>Escape	xkill
+/commands/default/<Primary><Alt>f	exo-open --launch FileManager
+/commands/default/<Primary><Alt>l	xflock4
+/commands/default/<Primary><Alt>Print	/usr/share/kali-themes/xfce4-screenshooter --window --clipboard
+/commands/default/<Primary><Alt>t	exo-open --launch TerminalEmulator
+/commands/default/<Primary>Escape	xfce4-popup-whiskermenu
+/commands/default/<Primary>Print	/usr/share/kali-themes/xfce4-screenshooter --fullscreen --clipboard
+/commands/default/<Primary><Shift><Alt>t	pkexec x-terminal-emulator
+/commands/default/<Primary><Shift>Escape	xfce4-taskmanager
+/commands/default/<Primary><Shift>Print	/usr/share/kali-themes/xfce4-screenshooter --region --clipboard
+/commands/default/Print	/usr/share/kali-themes/xfce4-screenshooter
+/commands/default/<Shift>Print	/usr/share/kali-themes/xfce4-screenshooter --region
+/commands/default/<Super>e	exo-open --launch FileManager
+/commands/default/<Super>f	exo-open --launch FileManager
+/commands/default/<Super>F1	xfce4-find-cursor
+/commands/default/<Super>l	xflock4
+/commands/default/<Super>p	xfce4-display-settings --minimal
+/commands/default/<Super>r	xfrun4
+/commands/default/<Super>t	exo-open --launch TerminalEmulator
+/commands/default/<Super>w	exo-open --launch WebBrowser
+/commands/default/XF86Calculator	mate-calc
+/commands/default/XF86Display	xfce4-display-settings --minimal
+/commands/default/XF86Explorer	exo-open --launch FileManager
+/commands/default/XF86HomePage	exo-open --launch WebBrowser
+/commands/default/XF86Mail	exo-open --launch MailReader
+/commands/default/XF86WWW	exo-open --launch WebBrowser
+
+# --- Window Manager (custom) ---
+/xfwm4/custom/<Alt>Delete	del_workspace_key
+/xfwm4/custom/<Alt>F11	fullscreen_key
+/xfwm4/custom/<Alt>F12	above_key
+/xfwm4/custom/<Alt>F4	close_window_key
+/xfwm4/custom/<Alt>F6	stick_window_key
+/xfwm4/custom/<Alt>F7	move_window_key
+/xfwm4/custom/<Alt>F8	resize_window_key
+/xfwm4/custom/<Alt>Insert	add_workspace_key
+/xfwm4/custom/<Alt><Shift>Page_Down	lower_window_key
+/xfwm4/custom/<Alt><Shift>Page_Up	raise_window_key
+/xfwm4/custom/<Alt><Shift>Tab	cycle_reverse_windows_key
+/xfwm4/custom/<Alt>space	popup_menu_key
+/xfwm4/custom/<Alt>Tab	cycle_windows_key
+/xfwm4/custom/Down	down_key
+/xfwm4/custom/Escape	cancel_key
+/xfwm4/custom/Left	left_key
+/xfwm4/custom/override	true
+/xfwm4/custom/<Primary><Alt>0	workspace_10_key
+/xfwm4/custom/<Primary><Alt>6	workspace_6_key
+/xfwm4/custom/<Primary><Alt>7	workspace_7_key
+/xfwm4/custom/<Primary><Alt>8	workspace_8_key
+/xfwm4/custom/<Primary><Alt>9	workspace_9_key
+/xfwm4/custom/<Primary><Alt>d	show_desktop_key
+/xfwm4/custom/<Primary><Alt>Down	down_workspace_key
+/xfwm4/custom/<Primary><Alt>End	move_window_next_workspace_key
+/xfwm4/custom/<Primary><Alt>Home	move_window_prev_workspace_key
+/xfwm4/custom/<Primary><Alt>Left	left_workspace_key
+/xfwm4/custom/<Primary><Alt>Right	right_workspace_key
+/xfwm4/custom/<Primary><Alt><Shift>Down	move_window_down_workspace_key
+/xfwm4/custom/<Primary><Alt><Shift>Left	move_window_left_workspace_key
+/xfwm4/custom/<Primary><Alt><Shift>Right	move_window_right_workspace_key
+/xfwm4/custom/<Primary><Alt><Shift>Up	move_window_up_workspace_key
+/xfwm4/custom/<Primary><Alt>Up	up_workspace_key
+/xfwm4/custom/<Primary><Super>0	move_window_workspace_10_key
+/xfwm4/custom/<Primary><Super>1	move_window_workspace_1_key
+/xfwm4/custom/<Primary><Super>2	move_window_workspace_2_key
+/xfwm4/custom/<Primary><Super>3	move_window_workspace_3_key
+/xfwm4/custom/<Primary><Super>4	move_window_workspace_4_key
+/xfwm4/custom/<Primary><Super>5	move_window_workspace_5_key
+/xfwm4/custom/<Primary><Super>6	move_window_workspace_6_key
+/xfwm4/custom/<Primary><Super>7	move_window_workspace_7_key
+/xfwm4/custom/<Primary><Super>8	move_window_workspace_8_key
+/xfwm4/custom/<Primary><Super>9	move_window_workspace_9_key
+/xfwm4/custom/<Primary><Super>Down	tile_down_key
+/xfwm4/custom/<Primary><Super>Up	tile_up_key
+/xfwm4/custom/Right	right_key
+/xfwm4/custom/<Shift><Super>Down	move_window_to_monitor_down_key
+/xfwm4/custom/<Shift><Super>Left	move_window_to_monitor_left_key
+/xfwm4/custom/<Shift><Super>Right	move_window_to_monitor_right_key
+/xfwm4/custom/<Shift><Super>Up	move_window_to_monitor_up_key
+/xfwm4/custom/<Super>1	workspace_1_key
+/xfwm4/custom/<Super>2	workspace_2_key
+/xfwm4/custom/<Super>3	workspace_3_key
+/xfwm4/custom/<Super>4	workspace_4_key
+/xfwm4/custom/<Super>5	workspace_5_key
+/xfwm4/custom/<Super>d	show_desktop_key
+/xfwm4/custom/<Super>Down	hide_window_key
+/xfwm4/custom/<Super>KP_1	tile_down_left_key
+/xfwm4/custom/<Super>KP_3	tile_down_right_key
+/xfwm4/custom/<Super>KP_7	tile_up_left_key
+/xfwm4/custom/<Super>KP_9	tile_up_right_key
+/xfwm4/custom/<Super>Left	tile_left_key
+/xfwm4/custom/<Super>Right	tile_right_key
+/xfwm4/custom/<Super>Tab	switch_window_key
+/xfwm4/custom/<Super>Up	maximize_window_key
+/xfwm4/custom/Up	up_key
+
+# --- Window Manager (default) ---
+/xfwm4/default/<Alt>Delete	del_workspace_key
+/xfwm4/default/<Alt>F11	fullscreen_key
+/xfwm4/default/<Alt>F12	above_key
+/xfwm4/default/<Alt>F4	close_window_key
+/xfwm4/default/<Alt>F6	stick_window_key
+/xfwm4/default/<Alt>F7	move_window_key
+/xfwm4/default/<Alt>F8	resize_window_key
+/xfwm4/default/<Alt>Insert	add_workspace_key
+/xfwm4/default/<Alt><Shift>Page_Down	lower_window_key
+/xfwm4/default/<Alt><Shift>Page_Up	raise_window_key
+/xfwm4/default/<Alt><Shift>Tab	cycle_reverse_windows_key
+/xfwm4/default/<Alt>space	popup_menu_key
+/xfwm4/default/<Alt>Tab	cycle_windows_key
+/xfwm4/default/Down	down_key
+/xfwm4/default/Escape	cancel_key
+/xfwm4/default/Left	left_key
+/xfwm4/default/<Primary><Alt>0	workspace_10_key
+/xfwm4/default/<Primary><Alt>1	workspace_1_key
+/xfwm4/default/<Primary><Alt>2	workspace_2_key
+/xfwm4/default/<Primary><Alt>3	workspace_3_key
+/xfwm4/default/<Primary><Alt>4	workspace_4_key
+/xfwm4/default/<Primary><Alt>5	workspace_5_key
+/xfwm4/default/<Primary><Alt>6	workspace_6_key
+/xfwm4/default/<Primary><Alt>7	workspace_7_key
+/xfwm4/default/<Primary><Alt>8	workspace_8_key
+/xfwm4/default/<Primary><Alt>9	workspace_9_key
+/xfwm4/default/<Primary><Alt>d	show_desktop_key
+/xfwm4/default/<Primary><Alt>Down	down_workspace_key
+/xfwm4/default/<Primary><Alt>End	move_window_next_workspace_key
+/xfwm4/default/<Primary><Alt>Home	move_window_prev_workspace_key
+/xfwm4/default/<Primary><Alt>Left	left_workspace_key
+/xfwm4/default/<Primary><Alt>Right	right_workspace_key
+/xfwm4/default/<Primary><Alt><Shift>Down	move_window_down_workspace_key
+/xfwm4/default/<Primary><Alt><Shift>Left	move_window_left_workspace_key
+/xfwm4/default/<Primary><Alt><Shift>Right	move_window_right_workspace_key
+/xfwm4/default/<Primary><Alt><Shift>Up	move_window_up_workspace_key
+/xfwm4/default/<Primary><Alt>Up	up_workspace_key
+/xfwm4/default/<Primary><Super>0	move_window_workspace_10_key
+/xfwm4/default/<Primary><Super>1	move_window_workspace_1_key
+/xfwm4/default/<Primary><Super>2	move_window_workspace_2_key
+/xfwm4/default/<Primary><Super>3	move_window_workspace_3_key
+/xfwm4/default/<Primary><Super>4	move_window_workspace_4_key
+/xfwm4/default/<Primary><Super>5	move_window_workspace_5_key
+/xfwm4/default/<Primary><Super>6	move_window_workspace_6_key
+/xfwm4/default/<Primary><Super>7	move_window_workspace_7_key
+/xfwm4/default/<Primary><Super>8	move_window_workspace_8_key
+/xfwm4/default/<Primary><Super>9	move_window_workspace_9_key
+/xfwm4/default/<Primary><Super>Down	tile_down_key
+/xfwm4/default/<Primary><Super>Up	tile_up_key
+/xfwm4/default/Right	right_key
+/xfwm4/default/<Shift><Super>Down	move_window_to_monitor_down_key
+/xfwm4/default/<Shift><Super>Left	move_window_to_monitor_left_key
+/xfwm4/default/<Shift><Super>Right	move_window_to_monitor_right_key
+/xfwm4/default/<Shift><Super>Up	move_window_to_monitor_up_key
+/xfwm4/default/<Super>d	show_desktop_key
+/xfwm4/default/<Super>Down	hide_window_key
+/xfwm4/default/<Super>KP_1	tile_down_left_key
+/xfwm4/default/<Super>KP_3	tile_down_right_key
+/xfwm4/default/<Super>KP_7	tile_up_left_key
+/xfwm4/default/<Super>KP_9	tile_up_right_key
+/xfwm4/default/<Super>Left	tile_left_key
+/xfwm4/default/<Super>Right	tile_right_key
+/xfwm4/default/<Super>Tab	switch_window_key
+/xfwm4/default/<Super>Up	maximize_window_key
+/xfwm4/default/Up	up_key
